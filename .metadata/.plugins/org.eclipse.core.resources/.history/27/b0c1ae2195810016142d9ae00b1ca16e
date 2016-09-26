@@ -1,0 +1,34 @@
+package warcraftlogs;
+
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class WarcraftMain extends WarcraftApi {
+
+	public static void main(String[] args) {
+		WarcraftMain api = new WarcraftMain();
+		api.start();
+
+	}
+
+	private void start() {
+		try {
+			String user_report_json = getUserReports("Oscuramente", false);
+
+			JSONArray json_array = new JSONArray(user_report_json);
+			
+				JSONObject raid_report = (JSONObject) json_array.get(json_array.length());
+				if((Integer)raid_report.get("zone")==10){
+					raid_list.add(raid_report);
+				
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

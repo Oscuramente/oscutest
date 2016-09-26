@@ -1,0 +1,15 @@
+package warcraftlogs;
+
+public class WarcraftMain extends WarcraftApi {
+
+	public static void main(String[] args) {
+		WarcraftMain api = new WarcraftMain();
+		api.start();
+
+	}
+
+	private void start() {
+		String user_report_json = getUserReports("Oscuramente",false);
+	}
+
+}

@@ -1,0 +1,68 @@
+package warcraftlogs;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class WarcraftApiGetLastUserReport {
+
+	protected static String basic_url = "https://www.warcraftlogs.com:443";
+	protected static String api_key_string = "?api_key=c1badab4cfee15ababc006b67c31c4b1";
+
+	private static String os = System.getProperty("os.name").toLowerCase();
+
+	public JSONObject getUserReports(String user, boolean save_json) {
+		JSONObject user_raid_report = null;
+		try {
+			URL user_report_url;
+
+			user_report_url = new URL(basic_url + "/v1/reports/user/" + user + api_key_string);
+
+			URLConnection urlcon = user_report_url.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
+			StringBuffer sb = new StringBuffer();
+			String inputLine;
+			while ((inputLine = in.readLine()) != null)
+				sb.append(inputLine);
+			in.close();
+
+			if (save_json) {
+				File f = null;
+				if (os.contains("linux")) {
+					f = new File("/home/christian/java_workspace/save_files/userReport_" + user + ".json");
+				} else {
+					f = new File("c://temp/userReport_" + user + ".json");
+				}
+
+				BufferedWriter output = new BufferedWriter(new FileWriter(f));
+				output.write(sb.toString());
+				output.close();
+			}
+
+			JSONArray json_array = new JSONArray(sb.toString());
+
+			user_raid_report = (JSONObject) json_array.get(json_array.length() - 1);
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user_raid_report;
+	}
+}

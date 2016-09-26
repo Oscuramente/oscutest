@@ -1,0 +1,39 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jarlenai.wcl.WarcraftLogsApi;
+import com.jarlenai.wcl.domain.ServerRegion;
+import com.jarlenai.wcl.domain.WarcraftServer;
+import com.jarlenai.wcl.domain.classes.WarcraftClass;
+import com.jarlenai.wcl.domain.fights.FightGroup;
+import com.jarlenai.wcl.domain.rankings.CharacterRanking;
+import com.jarlenai.wcl.domain.rankings.EncounterDifficulty;
+import com.jarlenai.wcl.domain.rankings.EncounterRankings;
+import com.jarlenai.wcl.domain.rankings.EncounterRegion;
+import com.jarlenai.wcl.domain.rankings.RankingMetric;
+import com.jarlenai.wcl.domain.reports.Report;
+import com.jarlenai.wcl.domain.zones.Zone;
+
+public class WarcraftLogs {
+	
+	ArrayList<Long> zones_to_parse = new ArrayList<Long>(10);
+
+	public static void main(String[] args) {
+		WarcraftLogs wl = new WarcraftLogs();
+		wl.start();
+	}
+
+	private void start() {
+		WarcraftLogsApi wla = WarcraftLogsApi.get("c1badab4cfee15ababc006b67c31c4b1");
+		
+		List<Report> user_reports = wla.getReportsForUser("Oscuramente", Long.valueOf("0"), Long.valueOf("0"));
+		
+		for(Report user_report : user_reports){
+			if(zones_to_parse.contains(user_report.getZone())) {
+				
+			}
+		}
+
+		}
+
+}

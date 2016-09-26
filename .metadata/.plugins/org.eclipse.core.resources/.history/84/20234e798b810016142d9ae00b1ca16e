@@ -1,0 +1,42 @@
+package warcraftlogs;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import javax.swing.text.html.InlineView;
+
+public class warcraftapi {
+
+	protected static String basic_url = "https://www.warcraftlogs.com:443";
+	protected static String api_key_string = "?api_key=c1badab4cfee15ababc006b67c31c4b1";
+	
+	private static String os = System.getProperty("os.name").toLowerCase();
+
+	public void getUserReports(String user) {
+		try {
+			URL user_report_url;
+
+			user_report_url = new URL(basic_url + "/v1/reports/user/" + user + api_key_string);
+
+			URLConnection urlcon = user_report_url.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
+			StringBuffer sb = new StringBuffer();
+			String inputLine;
+			while ((inputLine = in.readLine()) != null)
+				sb.append(inputLine);
+			in.close();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println(os);
+	}
+}

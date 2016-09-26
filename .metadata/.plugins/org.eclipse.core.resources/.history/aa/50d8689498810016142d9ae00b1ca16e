@@ -1,0 +1,18 @@
+package warcraftlogs;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class WarcraftApiGetRaidData extends WarcraftApiGetLastUserReport {
+
+	private void start() {
+		try {
+
+			JSONObject raid_report = getUserReports("Oscuramente", false);
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
