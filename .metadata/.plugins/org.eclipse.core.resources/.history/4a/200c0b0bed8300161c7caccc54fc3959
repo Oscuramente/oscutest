@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jarlenai.wcl.WarcraftLogsApi;
-import com.jarlenai.wcl.domain.fights.Fight;
 import com.jarlenai.wcl.domain.reports.Report;
 
 public class WarcraftLogs {
@@ -27,18 +26,10 @@ public class WarcraftLogs {
 
 		for (Report user_report : user_reports) {
 			if (zones_to_parse.contains(user_report.getZone())) {
-				System.out.println(user_report.getId());
-				parseFights(user_report.getTitle(), wla.getFightsForReport(user_report.getId()).getFights());
+				System.out.println(user_report.getTitle());
 			}
 		}
+
 	}
 
-	private void parseFights(String zone, List<Fight> fights) {
-		for (Fight fight : fights) {
-			if (fight.getBoss() != 0) {
-				System.out.println(fight.getName());
-				System.out.println(fight.getDifficulty());
-			}
-		}
-	}
 }

@@ -27,7 +27,6 @@ public class WarcraftLogs {
 
 		for (Report user_report : user_reports) {
 			if (zones_to_parse.contains(user_report.getZone())) {
-				System.out.println(user_report.getId());
 				parseFights(user_report.getTitle(), wla.getFightsForReport(user_report.getId()).getFights());
 			}
 		}
@@ -35,10 +34,8 @@ public class WarcraftLogs {
 
 	private void parseFights(String zone, List<Fight> fights) {
 		for (Fight fight : fights) {
-			if (fight.getBoss() != 0) {
-				System.out.println(fight.getName());
-				System.out.println(fight.getDifficulty());
-			}
+			System.out.println(fight.getName());
+			System.out.println(fight.getDifficulty());
 		}
 	}
 }

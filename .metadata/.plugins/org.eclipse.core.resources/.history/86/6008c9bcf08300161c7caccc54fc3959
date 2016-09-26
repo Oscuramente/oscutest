@@ -35,10 +35,9 @@ public class WarcraftLogs {
 
 	private void parseFights(String zone, List<Fight> fights) {
 		for (Fight fight : fights) {
-			if (fight.getBoss() != 0) {
-				System.out.println(fight.getName());
-				System.out.println(fight.getDifficulty());
-			}
+			if(fight.get)
+			System.out.println(fight.getName());
+			System.out.println(fight.getDifficulty());
 		}
 	}
 }
