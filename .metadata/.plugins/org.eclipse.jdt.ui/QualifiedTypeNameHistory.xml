@@ -16,4 +16,6 @@
 <fullyQualifiedTypeName name="com.jarlenai.wcl.WarcraftLogsApi"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="com.jarlenai.wcl.domain.reports.Report"/>
 </qualifiedTypeNameHistroy>
