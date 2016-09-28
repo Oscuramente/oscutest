@@ -1,0 +1,62 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.jarlenai.wcl.WarcraftLogsApi;
+import com.jarlenai.wcl.domain.fights.Fight;
+import com.jarlenai.wcl.domain.reports.Report;
+
+import warcraftlibs.DamageDoneParser;
+import warcraftlibs.Downloader;
+
+public class WarcraftLogs {
+
+	private WarcraftLogsApi wla = WarcraftLogsApi.get("c1badab4cfee15ababc006b67c31c4b1");
+
+	private ArrayList<Long> zones_to_parse = new ArrayList<Long>();
+	private HashMap<Long, String> difficulties = new HashMap<Long, String>();
+
+	public static void main(String[] args) {
+		WarcraftLogs wl = new WarcraftLogs();
+		wl.init();
+		wl.start();
+	}
+
+	private void init() {
+		zones_to_parse.add((long) 10);
+
+		difficulties.put((long) 3, "Normal");
+		difficulties.put((long) 4, "Heroic");
+		difficulties.put((long) 5, "Mythic");
+
+	}
+
+	private void start() {
+
+		List<Report> user_reports = wla.getReportsForUser("Oscuramente", (long) 0, System.currentTimeMillis());
+
+		for (Report user_report : user_reports) {
+			if (zones_to_parse.contains(user_report.getZone())) {
+				System.out.println(user_report.getId());
+				parseFights(user_report, wla.getFightsForReport(user_report.getId()).getFights());
+			}
+		}
+	}
+
+	private void parseFights(Report user_report, List<Fight> fights) {
+		for (Fight fight : fights) {
+			if (fight.getBoss() != 0) {
+				System.out.println(fight.getName());
+				System.out.println(fight.getDifficulty());
+
+				Downloader loader = new Downloader();
+				String damage_json = loader.download("/report/tables/damage-done/" + user_report.getId());
+
+				DamageDoneParser dparser = new DamageDoneParser();
+				dparser.
+
+						save_file();
+			}
+		}
+	}
+}

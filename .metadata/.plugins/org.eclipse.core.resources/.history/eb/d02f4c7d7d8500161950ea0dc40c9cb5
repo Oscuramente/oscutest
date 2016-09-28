@@ -1,0 +1,37 @@
+package warcraftlibs;
+
+import java.util.HashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class DamageDoneParser {
+
+	private HashMap DamageDoneParser(String json_string) {
+
+		HashMap<String, String> damage_done = new HashMap<String, String>();
+
+		try {
+
+			JSONObject damage_done_json = new JSONObject(json_string);
+			JSONArray entries = damage_done_json.getJSONArray("entries");
+
+			for (int i = 0; i < entries.length(); i++) {
+				JSONObject player = entries.getJSONObject(i);
+
+				damage_done.put("name", player.getString("name"));
+				damage_done.put("spec", player.getString("icon"));
+				damage_done.put("total", player.getString("total"));
+				damage_done.put("activeTime", player.getString("activeTime"));
+
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return damage_done;
+	}
+}

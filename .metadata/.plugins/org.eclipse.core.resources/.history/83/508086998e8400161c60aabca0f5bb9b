@@ -1,0 +1,100 @@
+/**
+ * Copyright 2015 Michael Beer <michael@jarlenai.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.jarlenai.wcl.domain.reports;
+
+/**
+ * Class representing the metadata for a report on WCL
+ */
+public class Report {
+
+    /**
+     * The report code. Can be viewed on the site with the URL string of /reports/id.
+     */
+    private String id;
+
+    /**
+     * The title for the report.
+     */
+    private String title;
+
+    /**
+     * The name of the user that uploaded the report.
+     */
+    private String owner;
+
+    /**
+     * The zone that the report is for. A value of -1 indicates that the zone for the report is not known.
+     */
+    private Long zone;
+
+    /**
+     * A UNIX timestamp with millisecond precision, indicating the start time of the report as far as logged events.
+     */
+    private Long startTime;
+
+    /**
+     * A UNIX timestamp with millisecond precision, indicating the end time of the report as far as logged events.
+     */
+    private Long endTime;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public Long getZone() {
+        return zone;
+    }
+
+    public void setZone(Long zone) {
+        this.zone = zone;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+}

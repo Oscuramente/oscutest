@@ -1,0 +1,42 @@
+package warcraftlibs;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class Downloader {
+
+	protected String url_base = "https://www.warcraftlogs.com:443/v1";
+	protected String api_key = "?api_key=c1badab4cfee15ababc006b67c31c4b1";
+	protected String api_key2 = "&api_key=c1badab4cfee15ababc006b67c31c4b1";
+
+	public String download(String url_part) {
+		StringBuilder input = new StringBuilder();
+		try {
+
+			URL url;
+			if (url_part.contains("?"))
+				url = new URL(url_base + url_part + api_key2);
+			else
+				url = new URL(url_base + url_part + api_key);
+
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String decodedString;
+			while ((decodedString = in.readLine()) != null) {
+				input.append(decodedString);
+			}
+			in.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return input.toString();
+
+	}
+
+}

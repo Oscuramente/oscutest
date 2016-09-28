@@ -1,0 +1,25 @@
+package warcraftlibs;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class Downloader {
+
+	public String downloader(String url_string) {
+		try {
+			URL url;
+			url = new URL(url_string);
+
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+		} catch (
+
+		MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}

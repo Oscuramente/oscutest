@@ -1,0 +1,188 @@
+/**
+ * Copyright 2015 Michael Beer <michael@jarlenai.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.jarlenai.wcl;
+
+import com.google.common.base.Strings;
+import com.jarlenai.wcl.domain.ServerRegion;
+import com.jarlenai.wcl.domain.WarcraftServer;
+import com.jarlenai.wcl.domain.classes.WarcraftClass;
+import com.jarlenai.wcl.domain.fights.FightGroup;
+import com.jarlenai.wcl.domain.rankings.*;
+import com.jarlenai.wcl.domain.reports.Report;
+import com.jarlenai.wcl.domain.zones.Zone;
+import retrofit.RestAdapter;
+import retrofit.http.GET;
+import retrofit.http.Path;
+import retrofit.http.Query;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
+/**
+ * https://www.warcraftlogs.com/v1/docs
+ */
+public interface WarcraftLogsApi {
+
+    /**
+     * Get an instance of the API that uses the given API key
+     * @param apiKey API Key to acceess WarcraftLogs API
+     * @return Instance of the API
+     */
+    public static WarcraftLogsApi get(final String apiKey) {
+
+        checkArgument(!Strings.isNullOrEmpty(apiKey), "A valid API Key must be provided");
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("https://www.warcraftlogs.com:443/v1")
+                .setRequestInterceptor(request -> request.addQueryParam("api_key", apiKey))
+                .build();
+
+        return restAdapter.create(WarcraftLogsApi.class);
+    }
+
+
+    /*
+    Zones
+     */
+
+    /**
+     * Gets an array of Zone objects.
+     * Each zone corresponds to a raid/dungeon instance in the game and has its own set of encounters.
+     * @return A list of zones
+     */
+    @GET("/zones")
+    List<Zone> getZones();
+
+    /*
+    Classes
+     */
+
+    /**
+     * Gets an array of Class objects. Each Class corresponds to a class in the game.
+     * @return Classes in the game
+     */
+    @GET("/classes")
+    List<WarcraftClass> getClasses();
+
+    /*
+    Rankings
+     */
+
+    /**
+     * Gets an object that contains a total count and an array of EncounterRanking objects and a total number of rankings for that encounter.
+     * Each EncounterRanking corresponds to a single character or guild/team
+     * @param encounterID The encounter to collect rankings for. Encounter IDs can be obtained using a /zones request.
+     * @param metric The metric to query for. Valid fight metrics are 'speed', 'execution' and 'feats'. Valid character metrics are 'dps', 'hps', 'bossdps, 'tankhps', or 'playerspeed'. For WoW only, 'krsi' can be used for tank survivability ranks.
+     * @param size The raid size to query for. This is only valid for fixed size raids. Raids with flexible sizing must omit this parameter.
+     * @param difficulty The difficulty setting to query for. Valid difficulty settings are 1 = LFR, 2 = Flex, 3 = Normal, 4 = Heroic, 5 = Mythic, 10 = Challenge Mode, 100 = WildStar. Can be omitted for encounters with only one difficulty setting.
+     * @param region The region group to query for. Valid options are 1 for US/EU and 2 for Asia. If omitted, US/EU is assumed.
+     * @param classID The class to query for if a character metric is specified. Valid class IDs can be obtained from a /classes API request. Optional.
+     * @param specID The spec to query for if a character metric is specified. Valid spec IDs can be obtained from a /classes API request. Optional.
+     * @param bracket The bracket to query for. If omitted or if a value of 0 is specified, then all brackets are examined. Brackets can be obtained from a /zones API request.
+     * @param limit The number of results to return at a time. If omitted, a default of 200 is assumed. Values greater than 5000 are not allowed.
+     * @param page The page to examine, starting from 1. If the value is omitted, then 1 is assumed. For example, with a page of 2 and a limit of 300, you will be fetching rankings 301-600.
+     * @return EncounterRankings for the given encounter.
+     */
+    @GET("/rankings/encounter/{encounterID}")
+    EncounterRankings getRankingsForEncounter(
+            @Path("encounterID") int encounterID,
+            @Query("metric") RankingMetric metric,
+            @Query("size") Integer size,
+            @Query("difficulty") EncounterDifficulty difficulty,
+            @Query("region") EncounterRegion region,
+            @Query("class") Integer classID,
+            @Query("spec") Integer specID,
+            @Query("bracket") Integer bracket,
+            @Query("limit") Integer limit,
+            @Query("page") Integer page
+    );
+
+    /**
+     * Gets an array of CharacterRanking objects. Each CharacterRanking corresponds to a single rank on a fight for the specified character.
+     * @param characterName The name of the character to collect rankings for.
+     * @param serverName The server that the character is found on. For World of Warcraft this is the 'slug' field returned from their realm status API.
+     * @param region The short region name for the server on which the character is located: US, EU, KR, TW, CN.
+     * @param zone The zone to fetch rankings for. If omitted, the latest open raid zone is used. This is currently Highmaul for WoW and Datascape for WildStar.
+     * @param metric The metric to query for. Valid character metrics are 'dps', 'hps', 'bossdps, 'tankhps', or 'playerspeed'. For WoW only, 'krsi' can be used for tank survivability ranks.
+     * @param bracket The bracket to query for. If omitted or if a value of 0 is specified, then all brackets are examined. Brackets can be obtained from a /zones API request.
+     * @param limit The cutoff beyond which ranks will not be checked. The character only ranks if they are within the limit. The default value is 200, and the maximum allowed value is 5000.
+     * @return List of character rankings
+     */
+    @GET("/rankings/character/{characterName}/{serverName}/{serverRegion}")
+    List<CharacterRanking> getRankingsForCharacter(
+            @Path("characterName") String characterName,
+            @Path("serverName") WarcraftServer serverName,
+            @Path("serverRegion") ServerRegion region,
+            @Query("zone") String zone,
+            @Query("metric") RankingMetric metric,
+            @Query("bracket") Integer bracket,
+            @Query("limit") Integer limit
+    );
+
+    /*
+    Reports
+     */
+
+
+    /**
+     * Gets an array of Report objects. Each Report corresponds to a single calendar report for the specified guild.
+     * @param guildName The name of the guild to collect reports for.
+     * @param server The server that the guild is found on. For World of Warcraft this is the 'slug' field returned from their realm status API.
+     * @param region The short region name for the server on which the guild is located: US, EU, KR, TW, CN.
+     * @param start An optional start time. This is a UNIX timestamp but with millisecond precision. If omitted, 0 is assumed.
+     * @param end An optional end time. This is a UNIX timestamp but with millisecond precision. If omitted, the current time is assumed.
+     * @return An list of Report objects for the given guild.
+     */
+    @GET("/reports/guild/{guildName}/{serverName}/{serverRegion}")
+    List<Report> getReportsForGuild(
+            @Path("guildName") String guildName,
+            @Path("serverName") WarcraftServer server,
+            @Path("serverRegion") ServerRegion region,
+            @Query("start") Long start,
+            @Query("end") Long end
+    );
+
+    /**
+     * TODO: What the heck is a username? Is it region agnostic?
+     * Gets an array of Report objects. Each Report corresponds to a single calendar report for the specified user's personal logs.
+     * @param userName The name of the user to collect reports for.
+     * @param start An optional start time. This is a UNIX timestamp but with millisecond precision. If omitted, 0 is assumed.
+     * @param end An optional end time. This is a UNIX timestamp but with millisecond precision. If omitted, the current time is assumed.
+     * @return A list of Report objects for the given username
+     */
+    @GET("/reports/user/{userName}")
+    List<Report> getReportsForUser(
+            @Path("userName") String userName,
+            @Query("start") Long start,
+            @Query("end") Long end
+    );
+
+    /*
+    Report
+    TODO: I think these are still WIP
+     */
+
+    @GET("/report/fights/{code}")
+    FightGroup getFightsForReport(
+            @Path("code") String reportID
+    );
+//
+//    @GET("/report/events/{code}")
+//    List<Report> getEventsForReport(
+//            @Path("code") String reportID
+//    );
+}

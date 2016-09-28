@@ -1,0 +1,19 @@
+package warcraftlibs;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class DamageDoneParser {
+	
+	private void DamageDoneParser(String json_string){		
+		try {
+			
+			JSONObject damgage_done = new JSONObject(json_string);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+}

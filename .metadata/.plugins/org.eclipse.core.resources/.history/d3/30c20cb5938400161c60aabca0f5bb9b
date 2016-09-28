@@ -1,0 +1,74 @@
+/**
+ * Copyright 2015 Michael Beer <michael@jarlenai.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.jarlenai.wcl;
+
+import com.jarlenai.wcl.domain.classes.WarcraftClass;
+import com.jarlenai.wcl.domain.fights.FightGroup;
+import com.jarlenai.wcl.domain.rankings.EncounterDifficulty;
+import com.jarlenai.wcl.domain.rankings.EncounterRegion;
+import com.jarlenai.wcl.domain.rankings.RankingMetric;
+import com.jarlenai.wcl.domain.zones.Zone;
+import com.jarlenai.wcl.request.EncounterRankingsRequestBuilder;
+import retrofit.http.Path;
+import retrofit.http.Query;
+
+import java.util.List;
+
+/**
+ * A wrapper around the raw API that will provide builders
+ * and utility methods for ease of use.
+ */
+public class WarcraftLogsService {
+
+    private WarcraftLogsApi api;
+
+    public WarcraftLogsService(String key) {
+        this.api = WarcraftLogsApi.get(key);
+    }
+
+    public WarcraftLogsApi getApi() {
+        return api;
+    }
+
+    /*
+    Delegated methods
+     */
+
+    public List<Zone> getZones() {
+        return api.getZones();
+    }
+
+    public List<WarcraftClass> getClasses() {
+        return api.getClasses();
+    }
+
+    public FightGroup getFightsForReport(@Path("code") String reportID) {
+        return api.getFightsForReport(reportID);
+    }
+    
+    public List<Reports> getTables(@Path("view") String view, @Path("code") String reportID, @Query("start") Long start,
+			@Query("end") Long end) {
+        return api.getTables(view,reportID,start,end);
+    }
+
+    /*
+    Builder methods
+     */
+
+    public EncounterRankingsRequestBuilder findEncounterRankings(int encounterID, RankingMetric metric, EncounterDifficulty difficulty, EncounterRegion region) {
+        return new EncounterRankingsRequestBuilder(api, encounterID, metric, difficulty, region);
+    }
+}

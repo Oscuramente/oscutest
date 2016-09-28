@@ -6,6 +6,9 @@ import com.jarlenai.wcl.WarcraftLogsApi;
 import com.jarlenai.wcl.domain.fights.Fight;
 import com.jarlenai.wcl.domain.reports.Report;
 
+import warcraftlibs.DamageDoneParser;
+import warcraftlibs.Downloader;
+
 public class WarcraftLogs {
 
 	private WarcraftLogsApi wla = WarcraftLogsApi.get("c1badab4cfee15ababc006b67c31c4b1");
@@ -45,6 +48,18 @@ public class WarcraftLogs {
 			if (fight.getBoss() != 0) {
 				System.out.println(fight.getName());
 				System.out.println(fight.getDifficulty());
+
+				Downloader loader = new Downloader();
+				String damage_json = loader.download("/report/tables/damage-done/" + user_report.getId() + "?start="
+						+ fight.getStartTime() + "&end=" + fight.getEndTime());
+				DamageDoneParser dparser = new DamageDoneParser();
+				HashMap<String, HashMap> damage_map = dparser.parse(damage_json);
+
+				for (String key : damage_map.keySet()) {
+					HashMap<String, String> player_map = damage_map.get(key);
+					System.out.println(player_map.get("name"));
+				}
+
 			}
 		}
 	}
